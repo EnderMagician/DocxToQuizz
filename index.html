@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bài Trắc Nghiệm TTHCM (DOCX/TXT)</title>
+    <title>Bài Trắc Nghiệm TTHCM (DOCX)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -27,7 +27,7 @@
             margin-bottom: 1.5rem;
             line-height: 1.6;
         }
-        .option-item { /* Container for checkbox/radio and label */
+        .option-item { 
             display: flex;
             align-items: center;
             width: 100%;
@@ -45,185 +45,148 @@
             background-color: #e2e8f0; 
             border-color: #94a3b8;
         }
-        .option-item.selected {
-            background-color: #bfdbfe; /* Lighter blue for selection before check */
+        .option-item.selected { /* User's selection before checking */
+            background-color: #bfdbfe; 
             border-color: #3b82f6;
         }
-        .option-item.correct {
-            background-color: #dcfce7 !important; /* Light green */
+        
+        /* Styles for quiz checking phase */
+        .option-item.disabled.correct { /* User's choice was correct OR this is the actual correct answer shown */
+            background-color: #dcfce7 !important; 
             color: #15803d !important;
             border-color: #22c55e !important;
         }
-        .option-item.incorrect {
-            background-color: #fee2e2 !important; /* Light red */
+        .option-item.disabled.incorrect { /* User's choice was incorrect */
+            background-color: #fee2e2 !important; 
             color: #b91c1c !important;
             border-color: #ef4444 !important;
         }
-        .option-item.disabled {
+        
+        /* Styles for review section (distinct from active quiz checking) */
+        .option-item.correct-answer-display { /* For review: actual correct answer */
+            background-color: #dcfce7 !important; 
+            border: 2px solid #22c55e !important;
+        }
+        .option-item.user-selected-display { /* For review: user's selection */
+             background-color: #e0f2fe !important; 
+             border: 2px solid #3b82f6 !important;
+        }
+        .option-item.user-selected-display.correct-answer-display { /* User selected correctly in review */
+             background-color: #cffafe !important; 
+             border: 2px solid #0e7490 !important;
+        }
+        .option-item.disabled { /* Generic disabled state (after an answer is checked in active quiz) */
             cursor: not-allowed;
-            opacity: 0.8;
+            opacity: 0.8; /* Keep opacity high enough to see correct/incorrect colors */
         }
 
-        /* Common styles for radio and checkbox inputs */
+
         .option-item input[type="radio"],
         .option-item input[type="checkbox"] {
-            /* Appearance reset for custom styling if needed, but native look is often fine */
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none; 
-            
             margin-right: 0.75rem;
             width: 1.1rem;
             height: 1.1rem;
-            border: 1px solid #64748b; /* Default border color */
+            border: 1px solid #64748b; 
             background-color: white;
             transition: background-color 0.2s, border-color 0.2s;
-            position: relative; /* For custom checkmark positioning if needed */
+            position: relative; 
         }
-
-        /* Specific styling for radio buttons to ensure they are circular */
-        .option-item input[type="radio"] {
-            border-radius: 50%; /* Makes it a circle */
-        }
-        
-        /* Radio button checked state */
+        .option-item input[type="radio"] { border-radius: 50%; }
         .option-item input[type="radio"]:checked {
-            background-color: #3b82f6; /* Tailwind blue-500 */
+            background-color: #3b82f6; 
             border-color: #3b82f6;
         }
-        /* Dot inside the checked radio button */
         .option-item input[type="radio"]:checked::before {
-            content: '';
-            display: block;
-            width: 0.5rem; /* Size of the dot */
-            height: 0.5rem;
-            background-color: white;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            content: ''; display: block; width: 0.5rem; height: 0.5rem;
+            background-color: white; border-radius: 50%;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
         }
-
-        /* Specific styling for checkboxes to ensure they are square (with slight rounding) */
-        .option-item input[type="checkbox"] {
-            border-radius: 3px; /* Makes it a slightly rounded square */
-        }
-
-        /* Checkbox checked state */
+        .option-item input[type="checkbox"] { border-radius: 3px; }
         .option-item input[type="checkbox"]:checked {
-            background-color: #3b82f6; /* Tailwind blue-500 */
+            background-color: #3b82f6; 
             border-color: #3b82f6;
         }
-
-        /* Checkmark inside the checked checkbox */
         .option-item input[type="checkbox"]:checked::before {
-            content: '';
-            display: block;
-            width: 0.3rem; /* Width of the checkmark lines */
-            height: 0.6rem; /* Height of the checkmark */
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            position: absolute;
-            top: 45%; /* Adjust for vertical centering */
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(45deg);
+            content: ''; display: block; width: 0.3rem; height: 0.6rem;
+            border: solid white; border-width: 0 2px 2px 0;
+            position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) rotate(45deg);
         }
-
 
         .nav-button {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: background-color 0.2s ease-in-out;
-            cursor: pointer;
+            padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 500;
+            transition: background-color 0.2s ease-in-out; cursor: pointer;
         }
-        .nav-button:disabled {
-            background-color: #94a3b8;
-            cursor: not-allowed;
-        }
-        .nav-button.next {
-            background-color: #3b82f6; 
-            color: white;
-        }
-        .nav-button.next:hover:not(:disabled) {
-            background-color: #2563eb;
-        }
-        .nav-button.restart {
-            background-color: #64748b; 
-            color: white;
-        }
-        .nav-button.restart:hover {
-            background-color: #475569;
-        }
+        .nav-button:disabled { background-color: #94a3b8; cursor: not-allowed; }
+        .nav-button.next { background-color: #3b82f6; color: white; }
+        .nav-button.next:hover:not(:disabled) { background-color: #2563eb; }
+        .nav-button.restart { background-color: #64748b; color: white; }
+        .nav-button.restart:hover { background-color: #475569; }
+        .nav-button.end-early { background-color: #ef4444; color: white; margin-left: 1rem;}
+        .nav-button.end-early:hover { background-color: #dc2626; }
+
         .progress-bar-container {
-            width: 100%;
-            background-color: #e5e7eb;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-            height: 10px;
+            width: 100%; background-color: #e5e7eb; border-radius: 8px;
+            overflow: hidden; margin-bottom: 1.5rem; height: 10px;
         }
         .progress-bar {
-            height: 100%;
-            background-color: #3b82f6; 
-            width: 0%;
-            transition: width 0.3s ease-in-out;
-            border-radius: 8px;
+            height: 100%; background-color: #3b82f6; width: 0%;
+            transition: width 0.3s ease-in-out; border-radius: 8px;
         }
-        .feedback-text {
-            margin-top: 1rem;
-            font-weight: 500;
-            min-height: 1.5em;
-        }
+        .feedback-text { margin-top: 1rem; font-weight: 500; min-height: 1.5em; }
         .feedback-text.correct { color: #16a34a; }
         .feedback-text.incorrect { color: #c2410c; }
         .feedback-text.no-answer { color: #ca8a04; }
         .score-container { text-align: center; }
-        .score-text {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 1rem;
-        }
-        .high-score-text {
-            font-size: 1rem;
-            color: #475569;
-            margin-bottom: 1.5rem;
-        }
-        #initial-message-container {
-            text-align: center;
-            padding: 2rem;
-        }
+        .score-text { font-size: 1.75rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem; }
+        .high-score-text { font-size: 1rem; color: #475569; margin-bottom: 1.5rem; }
+        
+        #initial-message-container { text-align: center; padding: 2rem; }
         #file-input-label {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            background-color: #4f46e5;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
+            display: inline-block; padding: 0.75rem 1.5rem; background-color: #4f46e5;
+            color: white; border-radius: 8px; cursor: pointer; font-weight: 500;
             transition: background-color 0.2s ease-in-out;
         }
         #file-input-label:hover { background-color: #4338ca; }
         #file-input { display: none; }
-        #file-name-display {
-            margin-top: 1rem;
-            font-style: italic;
-            color: #64748b;
+        #file-name-display { margin-top: 1rem; font-style: italic; color: #64748b; }
+
+        #review-area { margin-top: 2rem; border-top: 1px solid #e5e7eb; padding-top: 1.5rem; }
+        .review-question-item { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px dashed #d1d5db;}
+        .review-question-text { font-weight: bold; margin-bottom: 0.5rem; color: #111827; }
+        .review-options-list { list-style: none; padding-left: 0; }
+        .review-options-list li { 
+            padding: 0.5rem; margin-bottom: 0.25rem; border-radius: 6px; 
+            border: 1px solid transparent; /* Base border */
         }
+        .review-options-list li.user-selected { background-color: #e0f2fe; border-color: #7dd3fc;} /* User's choice */
+        .review-options-list li.correct-answer { background-color: #dcfce7; border-color: #86efac; } /* Actual correct answer */
+        .review-options-list li.user-selected.correct-answer { background-color: #a7f3d0; border-color: #34d399; } /* User chose correctly */
+        .review-question-feedback { font-style: italic; margin-top: 0.5rem; }
+        .review-question-feedback.correct { color: #166534; }
+        .review-question-feedback.incorrect { color: #991b1b; }
+        .review-question-feedback.unanswered { color: #78716c; }
+
     </style>
 </head>
 <body>
     <div class="quiz-container">
         <h1 class="text-3xl font-bold text-center text-slate-700 mb-2">Trắc Nghiệm Tư Tưởng Hồ Chí Minh</h1>
-        <p class="text-sm text-center text-slate-500 mb-6">Câu hỏi và lựa chọn được sắp xếp ngẫu nhiên. Chọn câu trả lời đúng nhất.</p>
-
+        
         <div id="initial-message-container">
-            <p class="text-lg text-slate-700 mb-4">Vui lòng chọn file câu hỏi (.docx hoặc .txt).</p>
-            <p class="text-sm text-slate-500 mb-4">Lưu ý: Đối với file .docx, đáp án đúng cần được **in đậm**. Đối với file .txt, sử dụng định dạng cũ.</p>
-            <label for="file-input" id="file-input-label">Chọn File</label>
-            <input type="file" id="file-input" accept=".txt,.doc,.docx"> <div id="file-name-display">Chưa có file nào được chọn.</div>
+            <p class="text-lg text-slate-700 mb-4">Chỉ hoạt động với file .docx.</p>
+            <p class="text-sm text-slate-500 mb-1">Định dạng file .docx cần thiết:</p>
+            <ul class="text-xs text-slate-600 list-disc list-inside mb-4 text-left mx-auto max-w-md">
+                <li>Mỗi câu hỏi bắt đầu bằng "Câu X:" (ví dụ: "Câu 1:", "Câu 2:").</li>
+                <li>Mỗi lựa chọn bắt đầu bằng "[<$>]" (ví dụ: "[<$>] Lựa chọn A").</li>
+                <li>Đáp án đúng phải được **in đậm (bold)** trong file Word.</li>
+                <li>Hỗ trợ câu hỏi có một hoặc nhiều đáp án đúng (nếu nhiều đáp án được in đậm).</li>
+            </ul>
+            <label for="file-input" id="file-input-label">Chọn File .docx</label>
+            <input type="file" id="file-input" accept=".docx">
+            <div id="file-name-display">Chưa có file nào được chọn.</div>
             <div id="loading-message" class="mt-4 text-slate-600"></div>
         </div>
 
@@ -238,7 +201,10 @@
             </div>
             <div class="mt-6 flex justify-between items-center">
                 <span id="question-counter" class="text-sm text-slate-500"></span>
-                <button id="next-button" class="nav-button next">Kiểm Tra</button>
+                <div>
+                    <button id="next-button" class="nav-button next">Kiểm Tra</button>
+                    <button id="end-early-button" class="nav-button end-early">Kết thúc sớm</button>
+                </div>
             </div>
         </div>
 
@@ -246,6 +212,9 @@
             <p id="score-text" class="score-text"></p>
             <p id="high-score-text" class="high-score-text"></p>
             <button id="restart-button" class="nav-button restart">Làm Lại Với File Khác</button>
+            <div id="review-area">
+                <h3 class="text-xl font-semibold mt-6 mb-4 text-slate-700">Xem lại câu hỏi và trả lời:</h3>
+                </div>
         </div>
     </div>
 
@@ -261,25 +230,22 @@
         const optionsContainer = document.getElementById('options-container');
         const feedbackTextElement = document.getElementById('feedback-text');
         const nextButton = document.getElementById('next-button');
+        const endEarlyButton = document.getElementById('end-early-button');
         const resultsArea = document.getElementById('results-area');
         const scoreTextElement = document.getElementById('score-text');
         const highScoreTextElement = document.getElementById('high-score-text');
         const restartButton = document.getElementById('restart-button');
         const progressBar = document.getElementById('progress-bar');
-        const progressBarContainer = document.getElementById('progress-bar-container');
+        const reviewArea = document.getElementById('review-area');
         const questionCounterElement = document.getElementById('question-counter');
 
         // --- Quiz State ---
         let allQuestions = []; 
         let currentQuestionIndex = 0;
         let score = 0;
-        let selectedOptionElements = []; // For multiple choice
+        let selectedOptionElements = []; 
         let answerChecked = false;
         
-        // For TXT parsing (fallback or specific use)
-        const TXT_CORRECT_ANSWER_MARKER = "SHAPE \\* MERGEFORMAT"; 
-        const REGEX_CLEAN_TXT_MARKER_ARTIFACTS = new RegExp(TXT_CORRECT_ANSWER_MARKER.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "|\\u0013|\\u0014|\\b|\\u0001|\\u0015|\\u0007", "g");
-
         // --- Utility Functions ---
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -288,11 +254,6 @@
             }
         }
 
-        /**
-         * Parses questions from HTML content generated by Mammoth.js from a DOCX file.
-         * @param {string} htmlContent - HTML string.
-         * @returns {Array} Array of question objects.
-         */
         function parseQuestionsFromHtml(htmlContent) {
             console.log("Starting HTML parsing...");
             const parser = new DOMParser();
@@ -320,8 +281,10 @@
                     }
                     currentQuestion = {
                         questionText: lineText.replace(questionStartRegex, "").trim(), 
-                        options: [],
-                        correctAnswerTexts: [], 
+                        options: [], // Will store { text: string, isCorrect: boolean }
+                        correctAnswerTexts: [], // Keep this for simpler cross-reference later
+                        userSelectedOptionTexts: [], // To store user's choices for review
+                        isUserCorrectForReview: null, // null, true, or false for review
                         questionType: 'single' 
                     };
                 } else if (optionStartRegex.test(lineText) && currentQuestion) { 
@@ -337,22 +300,14 @@
                     for (let k = 0; k < strongElementsInP.length; k++) {
                         const strongContent = strongElementsInP[k].textContent?.trim();
                         if (!strongContent) continue;
-
-                        if (strongContent === optionFullText) {
-                            isCorrect = true;
-                            break; 
-                        }
-
+                        if (strongContent === optionFullText) { isCorrect = true; break; }
                         if (strongContent.endsWith(optionFullText) && strongContent.startsWith(optionPrefixForCheck)) {
                             const prefixInStrong = strongContent.substring(0, strongContent.length - optionFullText.length).trim();
-                            if (prefixInStrong === optionPrefixForCheck) {
-                                isCorrect = true;
-                                break;
-                            }
+                            if (prefixInStrong === optionPrefixForCheck) { isCorrect = true; break; }
                         }
                     }
                     
-                    currentQuestion.options.push(optionFullText); 
+                    currentQuestion.options.push({ text: optionFullText, isCorrect: isCorrect }); 
                     if (isCorrect) {
                         currentQuestion.correctAnswerTexts.push(optionFullText);
                     }
@@ -366,8 +321,6 @@
                 if (currentQuestion.questionText && currentQuestion.options.length > 0) {
                      if (currentQuestion.correctAnswerTexts.length > 1) {
                         currentQuestion.questionType = 'multiple'; 
-                    } else if (currentQuestion.correctAnswerTexts.length === 0) {
-                        // console.warn("Question has no correct answer identified (bold missing in DOCX?):", currentQuestion.questionText);
                     }
                     parsedQuestions.push(currentQuestion);
                 } else {
@@ -379,64 +332,7 @@
             return parsedQuestions;
         }
         
-        function parseQuestionsFromTxt(rawText) {
-            console.log("Starting TXT parsing...");
-            const lines = rawText.split(/\r?\n/);
-            const parsedQuestions = [];
-            let currentQuestion = null;
-            let accumulatingQuestionText = "";
-            const questionStartRegex = /^Câu\s*\d+\s*\[<[^>]+>\]:\s*(.*)/i; 
-            const optionStartRegex = /^\[<\$>] \s*(.+)/i; 
-
-            lines.forEach(line => {
-                const trimmedLine = line.trim();
-                if (!trimmedLine || trimmedLine.startsWith("TRƯỜNG ĐẠI HỌC") || trimmedLine.startsWith("KHOA:") || trimmedLine.startsWith("BỘ NGÂN HÀNG CÂU HỎI") || trimmedLine.startsWith("MÔN:") || trimmedLine.startsWith("Tư tưởng Hồ Chí Minh_Chương_")) {
-                    return;
-                }
-                
-                const questionMatch = trimmedLine.match(questionStartRegex);
-                const optionMatch = trimmedLine.match(optionStartRegex);
-
-                if (questionMatch && questionMatch[1]) {
-                    if (currentQuestion) {
-                        currentQuestion.questionText = (currentQuestion.questionText + " " + accumulatingQuestionText).trim();
-                        accumulatingQuestionText = "";
-                        if (currentQuestion.questionText && currentQuestion.options.length > 0) {
-                            if (currentQuestion.correctAnswerTexts.length > 1) currentQuestion.questionType = 'multiple';
-                            else if (currentQuestion.correctAnswerTexts.length === 0) console.warn("TXT Question has no correct answer (marker missing?):", currentQuestion.questionText);
-                            parsedQuestions.push(currentQuestion);
-                        } else { console.warn("Skipping incomplete TXT question:", currentQuestion); }
-                    }
-                    currentQuestion = { questionText: questionMatch[1].trim(), options: [], correctAnswerTexts: [], questionType: 'single' };
-                } else if (optionMatch && optionMatch[1] && currentQuestion) {
-                    if (accumulatingQuestionText) {
-                        currentQuestion.questionText = (currentQuestion.questionText + " " + accumulatingQuestionText).trim();
-                        accumulatingQuestionText = "";
-                    }
-                    let rawOptionText = optionMatch[1];
-                    let cleanedOptionText = rawOptionText.replace(REGEX_CLEAN_TXT_MARKER_ARTIFACTS, "").replace(/\t+/g, ' ').replace(/\s{2,}/g, ' ').trim();
-                    currentQuestion.options.push(cleanedOptionText);
-                    if (rawOptionText.includes(TXT_CORRECT_ANSWER_MARKER)) {
-                        currentQuestion.correctAnswerTexts.push(cleanedOptionText);
-                    }
-                } else if (currentQuestion && trimmedLine) { 
-                    accumulatingQuestionText += " " + trimmedLine;
-                }
-            });
-
-            if (currentQuestion) {
-                 currentQuestion.questionText = (currentQuestion.questionText + " " + accumulatingQuestionText).trim();
-                 if (currentQuestion.questionText && currentQuestion.options.length > 0) {
-                    if (currentQuestion.correctAnswerTexts.length > 1) currentQuestion.questionType = 'multiple';
-                     else if (currentQuestion.correctAnswerTexts.length === 0) console.warn("TXT Question has no correct answer (marker missing?):", currentQuestion.questionText);
-                    parsedQuestions.push(currentQuestion);
-                } else { console.warn("Skipping last incomplete TXT question:", currentQuestion); }
-            }
-            console.log("Total Parsed Questions from TXT:", parsedQuestions.length);
-             if(parsedQuestions.length > 0) console.log("Sample TXT parsed questions (first 2):", JSON.parse(JSON.stringify(parsedQuestions.slice(0,2))));
-            return parsedQuestions;
-        }
-
+        // --- Quiz Functions ---
         function displayQuestion() {
             answerChecked = false;
             selectedOptionElements = []; 
@@ -450,29 +346,24 @@
                     currentQuestionIndex++; displayQuestion(); return; 
                 }
 
-                let shuffledOptions = [...questionData.options]; 
-                shuffleArray(shuffledOptions); 
+                let shuffledOptionObjects = [...questionData.options]; 
+                shuffleArray(shuffledOptionObjects); 
                 
+                questionData.currentlyDisplayedOptions = shuffledOptionObjects;
                 questionData.currentCorrectAnswerIndices = []; 
-                if (questionData.correctAnswerTexts && questionData.correctAnswerTexts.length > 0) {
-                    questionData.correctAnswerTexts.forEach(correctText => {
-                        const index = shuffledOptions.findIndex(opt => opt === correctText);
-                        if (index !== -1) {
-                            questionData.currentCorrectAnswerIndices.push(index);
-                        } else {
-                             console.warn(`Correct answer text "${correctText}" for question "${questionData.questionText}" NOT FOUND in its shuffled options:`, shuffledOptions);
-                        }
-                    });
-                }
+                shuffledOptionObjects.forEach((optObj, index) => {
+                    if (optObj.isCorrect) {
+                        questionData.currentCorrectAnswerIndices.push(index);
+                    }
+                });
                 
                 questionTextElement.innerHTML = questionData.questionText.replace(/\n/g, "<br>"); 
                 optionsContainer.innerHTML = ''; 
 
                 const inputType = questionData.questionType === 'multiple' ? 'checkbox' : 'radio';
 
-                shuffledOptions.forEach((optionText, index) => {
+                shuffledOptionObjects.forEach((optionObj, index) => {
                     const optionId = `q${currentQuestionIndex}_opt${index}`; 
-                    
                     const item = document.createElement('div');
                     item.classList.add('option-item');
                     
@@ -480,12 +371,12 @@
                     input.type = inputType;
                     input.name = `question_${currentQuestionIndex}`; 
                     input.id = optionId;
-                    input.value = optionText; 
+                    input.value = optionObj.text; 
                     input.dataset.index = index; 
 
                     const label = document.createElement('label');
                     label.htmlFor = optionId;
-                    label.textContent = optionText;
+                    label.textContent = optionObj.text;
                     
                     item.appendChild(input);
                     item.appendChild(label);
@@ -514,11 +405,14 @@
 
             if (inputElement.type === 'radio') {
                 selectedOptionElements.forEach(el => el.item.classList.remove('selected'));
-                selectedOptionElements = [{ input: inputElement, item: itemElement }]; 
+                selectedOptionElements = [{ input: inputElement, item: itemElement, text: inputElement.value }]; 
                 itemElement.classList.add('selected'); 
             } else { 
+                const existingSelection = selectedOptionElements.find(el => el.input === inputElement);
                 if (inputElement.checked) {
-                    selectedOptionElements.push({ input: inputElement, item: itemElement });
+                    if (!existingSelection) {
+                        selectedOptionElements.push({ input: inputElement, item: itemElement, text: inputElement.value });
+                    }
                     itemElement.classList.add('selected');
                 } else {
                     selectedOptionElements = selectedOptionElements.filter(el => el.input !== inputElement);
@@ -535,10 +429,15 @@
 
             answerChecked = true; 
             const currentQuestion = allQuestions[currentQuestionIndex];
+            currentQuestion.userSelectedOptionTexts = selectedOptionElements.map(el => el.text); 
+
             let isCompletelyCorrect = false; 
 
             const optionItems = optionsContainer.querySelectorAll('.option-item');
-            optionItems.forEach(item => item.classList.add('disabled')); 
+            optionItems.forEach(item => {
+                item.classList.add('disabled'); // Apply .disabled to all items
+            });
+
 
             if (currentQuestion.questionType === 'multiple') {
                 const selectedIndices = selectedOptionElements.map(el => parseInt(el.input.dataset.index)).sort((a,b)=>a-b);
@@ -551,38 +450,43 @@
                     const selectedIdx = parseInt(el.input.dataset.index);
                     el.item.classList.remove('selected'); 
                     if (correctIndices.includes(selectedIdx)) {
-                        el.item.classList.add('correct');
+                        el.item.classList.add('correct'); // This will be styled by .option-item.disabled.correct
                     } else {
-                        el.item.classList.add('incorrect');
+                        el.item.classList.add('incorrect'); // This will be styled by .option-item.disabled.incorrect
                     }
                 });
+                // Highlight any actual correct answers the user missed
                 optionItems.forEach(itemDiv => {
                     const inputInside = itemDiv.querySelector('input');
                     const optionIdxInShuffled = parseInt(inputInside.dataset.index);
                     if (correctIndices.includes(optionIdxInShuffled) && !selectedIndices.includes(optionIdxInShuffled)) {
-                         itemDiv.classList.add('correct'); 
+                         itemDiv.classList.add('correct'); // This will be styled by .option-item.disabled.correct
                     }
                 });
 
-            } else { 
+            } else { // Single choice
                 if (selectedOptionElements.length === 1) { 
+                    const selectedEl = selectedOptionElements[0].item;
                     const selectedIdx = parseInt(selectedOptionElements[0].input.dataset.index);
                     isCompletelyCorrect = currentQuestion.currentCorrectAnswerIndices.includes(selectedIdx);
                     
-                    selectedOptionElements[0].item.classList.remove('selected'); 
+                    selectedEl.classList.remove('selected'); 
                     if (isCompletelyCorrect) {
-                        selectedOptionElements[0].item.classList.add('correct');
+                        selectedEl.classList.add('correct'); // Styled by .option-item.disabled.correct
                     } else {
-                        selectedOptionElements[0].item.classList.add('incorrect');
+                        selectedEl.classList.add('incorrect'); // Styled by .option-item.disabled.incorrect
+                        // Highlight the actual correct answer if one was defined and different from user's choice
                         if (currentQuestion.currentCorrectAnswerIndices.length > 0) {
-                             const correctItemDiv = optionsContainer.querySelector(`input[data-index='${currentQuestion.currentCorrectAnswerIndices[0]}']`)?.closest('.option-item');
-                             if(correctItemDiv) correctItemDiv.classList.add('correct');
+                             const correctActualIdx = currentQuestion.currentCorrectAnswerIndices[0];
+                             const correctItemDiv = optionsContainer.querySelector(`input[data-index='${correctActualIdx}']`)?.closest('.option-item');
+                             if(correctItemDiv && correctItemDiv !== selectedEl) { 
+                                correctItemDiv.classList.add('correct'); // Styled by .option-item.disabled.correct
+                             }
                         }
                     }
-                } else {
-                    console.warn("Single choice question check with unexpected selection count:", selectedOptionElements.length);
                 }
             }
+            currentQuestion.isUserCorrectForReview = isCompletelyCorrect; 
 
             if (isCompletelyCorrect) {
                 score++;
@@ -614,12 +518,34 @@
                 }
             }
         }
+        
+        function handleEndEarly() {
+            if (!answerChecked && currentQuestionIndex < allQuestions.length && allQuestions[currentQuestionIndex]) {
+                 allQuestions[currentQuestionIndex].userSelectedOptionTexts = []; 
+                 allQuestions[currentQuestionIndex].isUserCorrectForReview = null; 
+            }
+            // Mark remaining questions as unanswered for review
+            for (let i = currentQuestionIndex + (answerChecked ? 1 : 0); i < allQuestions.length; i++) {
+                if (allQuestions[i]) {
+                    allQuestions[i].userSelectedOptionTexts = [];
+                    allQuestions[i].isUserCorrectForReview = null;
+                }
+            }
+            showResults(true); 
+        }
 
-        function showResults() {
+
+        function showResults(endedEarly = false) {
             quizContent.classList.add('hidden'); 
             resultsArea.classList.remove('hidden'); 
-            const percentage = allQuestions.length > 0 ? ((score / allQuestions.length) * 100).toFixed(1) : 0;
-            scoreTextElement.textContent = `Kết quả: ${score} / ${allQuestions.length} (${percentage}%)`;
+            const questionsAttempted = endedEarly ? currentQuestionIndex + (answerChecked && currentQuestionIndex < allQuestions.length ? 1 : 0) : allQuestions.length;
+            const totalQuestionsInQuiz = allQuestions.length;
+
+            const percentage = totalQuestionsInQuiz > 0 ? ((score / totalQuestionsInQuiz) * 100).toFixed(1) : 0;
+            scoreTextElement.textContent = `Kết quả: ${score} / ${totalQuestionsInQuiz} (${percentage}%)`;
+            if (endedEarly) {
+                 scoreTextElement.textContent += ` (Kết thúc sớm sau ${questionsAttempted} câu đã xem/trả lời)`;
+            }
             
             let highScore = localStorage.getItem('tthcmQuizHighScoreDocx'); 
             if (highScore === null || score > parseInt(highScore)) {
@@ -629,11 +555,64 @@
             } else {
                 highScoreTextElement.textContent = `Điểm cao nhất: ${highScore}`;
             }
+            displayReview(); 
         }
+        
+        function displayReview() {
+            reviewArea.innerHTML = '<h3 class="text-xl font-semibold mt-6 mb-4 text-slate-700">Xem lại câu hỏi và trả lời:</h3>'; 
+            const reviewList = document.createElement('div');
+
+            allQuestions.forEach((question, index) => {
+                if (!question) return; // Skip if question data is somehow null/undefined
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('review-question-item');
+
+                const qText = document.createElement('p');
+                qText.classList.add('review-question-text');
+                qText.innerHTML = `Câu ${index + 1}: ${question.questionText ? question.questionText.replace(/\n/g, "<br>") : "Lỗi: Không có nội dung câu hỏi"}`;
+                itemDiv.appendChild(qText);
+
+                const optionsUl = document.createElement('ul');
+                optionsUl.classList.add('review-options-list');
+                
+                if (question.options && Array.isArray(question.options)) {
+                    question.options.forEach(optObj => {
+                        const li = document.createElement('li');
+                        li.textContent = optObj.text;
+                        if (optObj.isCorrect) {
+                            li.classList.add('correct-answer');
+                        }
+                        if (question.userSelectedOptionTexts && question.userSelectedOptionTexts.includes(optObj.text)) {
+                            li.classList.add('user-selected');
+                        }
+                        optionsUl.appendChild(li);
+                    });
+                }
+                itemDiv.appendChild(optionsUl);
+
+                const feedbackP = document.createElement('p');
+                feedbackP.classList.add('review-question-feedback');
+                if (question.isUserCorrectForReview === true) {
+                    feedbackP.textContent = "Trả lời: Đúng";
+                    feedbackP.classList.add('correct');
+                } else if (question.isUserCorrectForReview === false) {
+                    feedbackP.textContent = "Trả lời: Sai";
+                    feedbackP.classList.add('incorrect');
+                } else { 
+                    feedbackP.textContent = "Trả lời: Chưa trả lời";
+                    feedbackP.classList.add('unanswered');
+                }
+                itemDiv.appendChild(feedbackP);
+                reviewList.appendChild(itemDiv);
+            });
+            reviewArea.appendChild(reviewList);
+        }
+
 
         function restartQuiz() {
             currentQuestionIndex = 0; score = 0; selectedOptionElements = []; answerChecked = false; allQuestions = []; 
             resultsArea.classList.add('hidden'); 
+            reviewArea.innerHTML = '<h3 class="text-xl font-semibold mt-6 mb-4 text-slate-700">Xem lại câu hỏi và trả lời:</h3>'; 
             quizContent.classList.add('hidden'); 
             initialMessageContainer.classList.remove('hidden'); 
             fileNameDisplay.textContent = 'Chưa có file nào được chọn.'; 
@@ -654,11 +633,15 @@
                 if (fileType === 'docx') {
                     allQuestions = parseQuestionsFromHtml(content); 
                 } else { 
-                    allQuestions = parseQuestionsFromTxt(content); 
+                    loadingMessage.textContent = "Định dạng file .txt không còn được hỗ trợ. Vui lòng sử dụng file .docx.";
+                    fileNameDisplay.textContent += " (Không hỗ trợ)";
+                    initialMessageContainer.classList.remove('hidden');
+                    quizContent.classList.add('hidden');
+                    return;
                 }
                 
                 if (allQuestions.length === 0) {
-                    loadingMessage.textContent = "Không tìm thấy câu hỏi nào hoặc lỗi phân tích. Vui lòng kiểm tra định dạng file (đáp án đúng in đậm cho .docx).";
+                    loadingMessage.textContent = "Không tìm thấy câu hỏi nào hoặc lỗi phân tích. Vui lòng kiểm tra định dạng file .docx (đáp án đúng in đậm).";
                     fileNameDisplay.textContent += " (Lỗi phân tích)";
                     quizContent.classList.add('hidden'); 
                     initialMessageContainer.classList.remove('hidden');
@@ -702,19 +685,9 @@
                         fileNameDisplay.textContent += " (Lỗi đọc file)";
                     };
                     reader.readAsArrayBuffer(file); 
-                } else if (file.name.endsWith('.txt')) {
-                    reader.onload = function(e_reader) {
-                        initializeQuizWithContent(e_reader.target.result, 'txt'); 
-                    };
-                    reader.onerror = () => { 
-                        console.error("FileReader error for TXT.");
-                        loadingMessage.textContent = "Không thể đọc file .txt.";
-                        fileNameDisplay.textContent += " (Lỗi đọc file)";
-                    };
-                    reader.readAsText(file); 
-                } else {
-                    loadingMessage.textContent = "Định dạng file không được hỗ trợ. Vui lòng chọn file .docx hoặc .txt.";
-                    fileNameDisplay.textContent += " (Không hỗ trợ)";
+                } else { 
+                    loadingMessage.textContent = "Định dạng file không được hỗ trợ. Vui lòng chọn file .docx.";
+                    fileNameDisplay.textContent += " (Chỉ hỗ trợ .docx)";
                     fileInput.value = ''; 
                 }
             } else { 
@@ -724,6 +697,7 @@
         });
 
         nextButton.addEventListener('click', handleNextButtonClick);
+        endEarlyButton.addEventListener('click', handleEndEarly); 
         restartButton.addEventListener('click', restartQuiz);
 
     </script>
