@@ -181,7 +181,7 @@
             <ul class="text-xs text-slate-600 list-disc list-inside mb-4 text-left mx-auto max-w-md">
                 <li>Mỗi câu hỏi bắt đầu bằng "Câu X:" (ví dụ: "Câu 1:", "Câu 2:").</li>
                 <li>Mỗi lựa chọn bắt đầu bằng "[<$>]" (ví dụ: "[<$>] Lựa chọn A").</li>
-                <li>Đáp án đúng phải được **in đậm (bold)** trong file Word.</li>
+                <li>Đáp án đúng phải được in đậm (bold) trong file Word.</li>
                 <li>Hỗ trợ câu hỏi có một hoặc nhiều đáp án đúng (nếu nhiều đáp án được in đậm).</li>
             </ul>
             <label for="file-input" id="file-input-label">Chọn File .docx</label>
@@ -202,8 +202,8 @@
             <div class="mt-6 flex justify-between items-center">
                 <span id="question-counter" class="text-sm text-slate-500"></span>
                 <div>
-                    <button id="next-button" class="nav-button next">Kiểm Tra</button>
                     <button id="end-early-button" class="nav-button end-early">Kết thúc sớm</button>
+                    <button id="next-button" class="nav-button next">Kiểm Tra</button>
                 </div>
             </div>
         </div>
@@ -211,6 +211,7 @@
         <div id="results-area" class="hidden score-container">
             <p id="score-text" class="score-text"></p>
             <p id="high-score-text" class="high-score-text"></p>
+            <button id="redo-wrong-answers" class="nav-button next">Làm lại câu sai</button>
             <button id="restart-button" class="nav-button restart">Làm Lại Với File Khác</button>
             <div id="review-area">
                 <h3 class="text-xl font-semibold mt-6 mb-4 text-slate-700">Xem lại câu hỏi và trả lời:</h3>
@@ -343,7 +344,7 @@
                 const questionData = allQuestions[currentQuestionIndex];
                 if (!questionData || !questionData.options || !questionData.questionText) {
                     console.error("Invalid question data at index:", currentQuestionIndex, questionData);
-                    currentQuestionIndex++; displayQuestion(); return; 
+                    currentQuestionIndex++; displayQuestion(); return;
                 }
 
                 let shuffledOptionObjects = [...questionData.options]; 
@@ -534,6 +535,44 @@
             showResults(true); 
         }
 
+        function handleRedoWrongAnswers() {
+            // Filter out questions that were answered incorrectly or unanswered
+            const redoQuestions = allQuestions.filter(q => q.isUserCorrectForReview === false || q.isUserCorrectForReview === null);
+        
+            // Check if there are any questions to redo
+            if (redoQuestions.length === 0) {
+            alert('Không có câu trả lời sai hoặc chưa trả lời để làm lại!');
+            return;
+            }
+        
+            // Reset quiz state variables
+            currentQuestionIndex = 0; 
+            score = 0; 
+            selectedOptionElements = []; 
+            answerChecked = false;
+        
+            // Create a new array for the filtered questions to avoid overwriting allQuestions
+            const filteredQuestions = redoQuestions;
+        
+            // Reset UI elements
+            resultsArea.classList.add('hidden');
+            reviewArea.innerHTML = '<h3 class="text-xl font-semibold mt-6 mb-4 text-slate-700">Xem lại câu hỏi và trả lời:</h3>';
+            quizContent.classList.remove('hidden');
+        
+            // Update progress indicators
+            progressBar.style.width = '0%';
+            questionCounterElement.textContent = `Câu 1 / ${filteredQuestions.length}`;
+        
+            // Reset user selections and feedback for each question
+            allQuestions.forEach(question => {
+            question.userSelectedOptionTexts = [];
+            question.isUserCorrectForReview = null;
+            });
+        
+            // Start the quiz with the filtered questions
+            allQuestions = filteredQuestions;
+            displayQuestion();
+        }
 
         function showResults(endedEarly = false) {
             quizContent.classList.add('hidden'); 
@@ -699,6 +738,8 @@
         nextButton.addEventListener('click', handleNextButtonClick);
         endEarlyButton.addEventListener('click', handleEndEarly); 
         restartButton.addEventListener('click', restartQuiz);
+        const redoWrongAnswersButton = document.getElementById('redo-wrong-answers');
+        redoWrongAnswersButton.addEventListener('click', handleRedoWrongAnswers);
 
     </script>
 </body>
